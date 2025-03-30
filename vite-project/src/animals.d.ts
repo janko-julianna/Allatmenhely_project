@@ -1,5 +1,5 @@
 declare module './animals.js' {
-    export default class Animals {
+    export default class Filter {
         constructor();
     }
 

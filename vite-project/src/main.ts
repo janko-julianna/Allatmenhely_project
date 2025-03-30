@@ -2,6 +2,7 @@ import './style.css'
 import javascriptLogo from './javascript.svg'
 import viteLogo from '/vite.svg'
 import Animals from './animals.js'
+import Filter from './animals.d.js'
 
 interface RouteConfig {
     page: string;
@@ -19,7 +20,7 @@ const PAGES = '/pages/';
 const routes: Routes = {
     '/': { page: 'home.html', code: null },
     '/allatok': { page: 'animals.html', code: Animals },
-    '/Keresés': { page: 'searching.html', code: null },
+    '/Keresés': { page: 'searching.html', code: Filter },
     '/rolunk': { page: 'aboutus.html', code: null },
     '/kapcsolat': { page: 'contact.html', code: null }
 };
