@@ -35,17 +35,17 @@ export default class Animals{
 
             document.body.appendChild(tableElement);
         }
-        animals.forEach(u => {
+        animals.forEach(a => {
             let tr = document.createElement('tr');
             let pages = '';
             tr.innerHTML = `
-                <td>${u.id}</td>
-                <td>${u.name}</td>
-                <td>${u.species}</td>
-                <td>${u.breed}</td>
-                <td>${u.age}</td>
-                <td>${u.gender}</td>
-                <td>${u.size}</td>
+                <td>${a.id}</td>
+                <td>${a.name}</td>
+                <td>${a.species}</td>
+                <td>${(a.breed).split("_").join(" ")}</td>
+                <td>${a.age}</td>
+                <td>${a.gender}</td>
+                <td>${a.size}</td>
             `
             table.appendChild(tr);
         });

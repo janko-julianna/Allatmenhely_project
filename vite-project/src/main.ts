@@ -1,16 +1,14 @@
 import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
 import Animals from './animals.js'
 import Filter from './animals.d.js'
 
-interface RouteConfig {
-    page: string;
-    code: any;
-}
+//interface RouteConfig {
+   // page: string;
+   // code: any;
+//}
 
 interface Routes {
-    [key: string]: RouteConfig;
+    [key: string]: {page:string, code:any};
 }
 
 const rootDiv = document.querySelector("#root") as HTMLDivElement;
@@ -20,7 +18,7 @@ const PAGES = '/pages/';
 const routes: Routes = {
     '/': { page: 'home.html', code: null },
     '/allatok': { page: 'animals.html', code: Animals },
-    '/Keresés': { page: 'searching.html', code: Filter },
+    '/search': { page: 'searching.html', code: Filter },
     '/rolunk': { page: 'aboutus.html', code: null },
     '/kapcsolat': { page: 'contact.html', code: null }
 };
@@ -42,6 +40,7 @@ const onNavClick = async (event: MouseEvent): Promise<void> => {
     const target = event.target as HTMLAnchorElement;
     const pathName = target.dataset.href || '/';
     window.history.pushState({}, '', pathName);
+    console.log(`${routes[pathName].page} a`)
     const data = await loadPage(routes[pathName].page);
     rootDiv.innerHTML = data;
     dynamicClass(routes[pathName].code);
