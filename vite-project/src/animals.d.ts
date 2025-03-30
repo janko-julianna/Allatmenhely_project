@@ -1,18 +1,36 @@
-declare module './animals.js' {
-    export default class Filter {
-        constructor();
-    }
+export default class Filter {
+        constructor(){
+        this.showAnimals();
+        this.loadSelects();
+        this.addEventToSelects();
+        }
 
-    async function loadAnimals(filterby:string[] = []){
+    async loadAnimals(filterby:string[] = []){
         let froute:string = "http://localhost:3000/animals/?";
-        filterby.forEach(e => {
-            froute+=`${e}=${e}&`;
-        });
+        for (let i = 0; i < filterby.length; i++) {
+                if (i==0) {
+                    froute+=`name=${filterby[i]}&`;
+                }
+                if (i==1) {
+                    let breed:string = filterby[i];
+                    if (breed.indexOf(" " >= 0)) {
+                        breed = breed.split(" ").join("_");
+                    }
+                    froute+=`breed=${breed}&`
+                }
+                if (i==2) {
+                    froute+=`age=${filterby[i]}&`;
+                }
+                if (i==3) {
+                    froute+=`size=${filterby[i]}`;
+                }
+        }
+        console.log(froute)
         let response = await fetch(froute);
         return await response.json();
     }
 
-    async function loadSelects():Promise<void>{
+    async loadSelects():Promise<void>{
         let data = await this.loadAnimals();
 
         let names:string[] = [];
@@ -40,23 +58,26 @@ declare module './animals.js' {
             }
         });
         names.forEach(e=>{
-            document.querySelector("#name")!.innerHTML += `<option value="${e}"></option>`;
+            document.querySelector("#name")!.innerHTML += `<option value="${e}">${e}</option>`;
         });
         ages.forEach(e=>{
-            document.querySelector("#age")!.innerHTML += `<option value="${e}"></option>`;
+            document.querySelector("#age")!.innerHTML += `<option value="${e}">${e}</option>`;
         })
         sizes.forEach(e=>{
-            document.querySelector("#size")!.innerHTML += `<option value="${e}"></option>`;
+            document.querySelector("#size")!.innerHTML += `<option value="${e}">${e}</option>`;
         })
         breeds.forEach(e=>{
-            document.querySelector("#breed")!.innerHTML += `<option value="${e}"></option>`;
+            let breed:string = e;
+            document.querySelector("#breed")!.innerHTML += `<option value="${e}">${breed.split("_").join(' ')}</option>`;
         })
     }
 
-    async function showAnimals(filterby:string[]=[]){
-        const universities = await this.loadAnimals(filterby);
+    async showAnimals(filterby:string[]=[]){
+        const Animals = await this.loadAnimals(filterby);
+        console.log(Animals)
 
         let table = document.querySelector('.table tbody');
+        table!.innerHTML="";
         if (!table) {
             const tableElement = document.createElement('table');
             tableElement.classList.add('table');
@@ -79,36 +100,38 @@ declare module './animals.js' {
 
             document.body.appendChild(tableElement);
         }
-        universities.forEach(u => {
+        Animals.forEach(a => {
             let tr:HTMLTableRowElement = document.createElement('tr') as HTMLTableRowElement;
             let pages = '';
             tr.innerHTML = `
-                <td>${u.id}</td>
-                <td>${u.name}</td>
-                <td>${u.species}</td>
-                <td>${u.breed}</td>
-                <td>${u.age}</td>
-                <td>${u.gender}</td>
-                <td>${u.size}</td>
+                <td>${a.id}</td>
+                <td>${a.name}</td>
+                <td>${a.species}</td>
+                <td>${(a.breed).split("_").join(" ")}</td>
+                <td>${a.age}</td>
+                <td>${a.gender}</td>
+                <td>${a.size}</td>
             `
             table!.appendChild(tr);
         });
     }
 
-    let selects = document.querySelectorAll("select");
-
-    function getFilterValues():string[] {
+     getFilterValues():string[] {
         let values:string[] = [];
-        selects = document.querySelectorAll("select");
+        const selects = document.querySelectorAll("select");
         selects.forEach(s=>{
              values.push(`${s.value}`)
         })
+        console.log(values)
         return values;
     };
 
-    selects.forEach(s=>{
-        s.addEventListener("change", () =>{
-                this.showAnimals(getFilterValues());
-        })
-    });
+    addEventToSelects(){
+        const selects = document.querySelectorAll("select");
+        selects.forEach(s=>{
+            s.addEventListener("change", () =>{
+                this.showAnimals(this.getFilterValues());
+            })
+        });
+    }
 }
